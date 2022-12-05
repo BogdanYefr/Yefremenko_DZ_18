@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>title</title>
+    <style>
+      #app {
+        display: flex;
+        justify-content: center;
+      }
+      .form {
+        width: 250px;
+        text-align: center;
+        border: 1px solid orangered;
+        padding-bottom: 20px;
+        border-radius: 30px;
+        background-color: bisque;
+      }
+      p, label {
+        color: red;
+      }
+      input {
+        border-color: red;
+      }
+      .active {
+        background-color: #000000c2;
+      }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+           
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+           
+    <script type="text/babel">
+        class UserForm extends React.Component {
+          constructor(props) {
+            super(props)
+            this.state = {
+              currentStep: 1,
+              username: "",
+              lastUserName: "",
+              city: "",
+              email:  "",
+              password: "", 
+            }
+          }
+ 
+          handleChange = event => {
+            const {name, value} = event.target
+            this.setState({
+              [name]: value
+            })    
+          }
+            
+          handleSubmit = event => {
+            event.preventDefault()
+            const { email, username, lastUserName, city, password } = this.state;
+            if (email != '' && username != '' && lastUserName != '' && city != '' && password != '') {
+              alert(`Введені дані: \nІм'я: ${username} \nПрізвище: ${lastUserName} \nМісто: ${city} \nEmail: ${email} \nПароль: ${password}`)
+            } else alert('Заповніть всі поля')
+           
+          }
+           
+          _next = () => {
+            let currentStep = this.state.currentStep
+            currentStep = currentStep >= 4? 5: currentStep + 1
+            this.setState({
+                currentStep: currentStep
+            })
+          }
+             
+          _prev = () => {
+            let currentStep = this.state.currentStep
+            currentStep = currentStep <= 1? 1: currentStep - 1
+            this.setState({
+              currentStep: currentStep
+            })
+          }
+ 
+        previousButton() {
+          let currentStep = this.state.currentStep;
+          if(currentStep !==1){
+            return (
+              <button type="button" onClick={this._prev}>Previous</button>
+            )
+          }
+          return null;
+        }
+ 
+        nextButton(){
+          let currentStep = this.state.currentStep;
+          if(currentStep <5){
+            return (
+              <button type="button" onClick={this._next}>Next</button>        
+            )
+          }
+          return null;
+        }
+         
+        sendButton(){
+          let currentStep = this.state.currentStep;
+          if(currentStep === 5){
+            return (
+                <button>Submit</button>      
+            )
+          }
+          return null;
+        }
+
+        changeTema(){
+          const toggle = document.getElementById('fon');
+          toggle.classList.toggle('active')
+          console.log('hello');
+        }
+        
+       
+      render() {    
+        return (
+          <div className='form' id='fon'>
+          <p>Step {this.state.currentStep} </p> 
+ 
+          <form onSubmit={this.handleSubmit}>
+            <UserNameStep
+              currentStep={this.state.currentStep} 
+              handleChange={this.handleChange}
+              username={this.state.username}
+            />
+            <LastUserNameStep
+              currentStep={this.state.currentStep} 
+              handleChange={this.handleChange}
+              lastUserName={this.state.lastUserName}
+            />
+            <CityStep
+              currentStep={this.state.currentStep} 
+              handleChange={this.handleChange}
+              city={this.state.city}
+            />
+            <EmailStep
+              currentStep={this.state.currentStep} 
+              handleChange={this.handleChange}
+              email={this.state.email}
+            />
+            <PasswordStep
+              currentStep={this.state.currentStep} 
+              handleChange={this.handleChange}
+              password={this.state.password}
+            />
+            <p>
+            {this.previousButton()}
+            {this.nextButton()}
+            {this.sendButton()}
+            </p>
+          </form>
+          <button onClick={this.changeTema}>Vampire mode</button>
+          </div>
+        );
+      }
+    }
+ 
+    class UserNameStep extends React.Component {
+     
+        render() {
+          if (this.props.currentStep !== 1) {
+            return null
+          } 
+          return(
+            <div>
+              <label>Ім'я</label>
+              <input
+                name="username"
+                type="text"
+                placeholder="Введіть ім'я"
+                value={this.props.username}
+                onChange={this.props.handleChange}
+                />
+            </div>
+          );
+        }
+    }
+    class LastUserNameStep extends React.Component {
+     
+     render() {
+       if (this.props.currentStep !== 2) {
+         return null
+       } 
+       return(
+         <div>
+           <label>Прізвище</label>
+           <input
+             name="lastUserName"
+             type="text"
+             placeholder="Введіть прізвище"
+             value={this.props.lastUserName}
+             onChange={this.props.handleChange}
+             />
+         </div>
+       );
+     }
+ }
+ class CityStep extends React.Component {
+     
+     render() {
+       if (this.props.currentStep !== 3) {
+         return null
+       } 
+       return(
+         <div>
+           <label>Місто</label>
+           <input
+             name="city"
+             type="text"
+             placeholder="Введіть місто"
+             value={this.props.city}
+             onChange={this.props.handleChange}
+             />
+         </div>
+       );
+     }
+ }
+    class EmailStep extends React.Component {
+        render() {
+            if (this.props.currentStep !== 4) {
+                return null;
+            } 
+            return(
+                <div>
+                  <label>Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Введіть email"
+                    value={this.props.email}
+                    onChange={this.props.handleChange}
+                    />
+                </div>
+            );
+        }
+    }
+ 
+ 
+    class PasswordStep extends React.Component {
+        render() {
+          if (this.props.currentStep !== 5) {
+            return null
+          } 
+          return(
+            <div>
+              <label>Пароль</label>
+              <input
+                name="password"
+                type="password"
+                placeholder="Введіть пароль"
+                value={this.props.password}
+                onChange={this.props.handleChange}
+                />      
+            </div>
+          );
+        }
+    }
+ 
+    ReactDOM.createRoot(
+        document.getElementById("app")
+    )
+    .render(<UserForm />);
+    </script>
+</body>
+</html>
